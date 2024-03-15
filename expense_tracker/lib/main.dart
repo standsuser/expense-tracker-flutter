@@ -11,8 +11,8 @@ class ExpenseTrackerApp extends StatelessWidget {
     return MaterialApp(
       title: 'Masroufi Builder',
       theme: ThemeData(
-        primaryColor: Colors.blue, // Set primary color to blue
-        primarySwatch: Colors.blue, // Set primary swatch to blue
+        primaryColor: Colors.blue, 
+        primarySwatch: Colors.blue, 
       ),
       home: PrimaryScreen(),
     );
