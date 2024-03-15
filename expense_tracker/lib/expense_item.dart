@@ -17,8 +17,42 @@ class ExpenseItem extends StatelessWidget {
         elevation: 4,
         child: ListTile(
           contentPadding: EdgeInsets.all(16.0),
-          title: Text(expense.title),
-          subtitle: Text('Amount: \$${expense.amount.toString()} | Date: $formattedDate'),
+          title: Row(
+            children: [
+              Expanded(
+                flex: 2,
+                child: Container(
+                  padding: EdgeInsets.all(7),
+                  decoration: BoxDecoration(
+                    border: Border.all(color: Colors.black),
+                  ),
+                  child: Text(
+                    '\$${expense.amount.toStringAsFixed(2)}',
+                  ),
+                ),
+              ),
+              Expanded(
+                flex: 3,
+                child: Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 8.0),
+                  child: Text(
+                    expense.title,
+                    style: TextStyle(fontSize: 16),
+                  ),
+                ),
+              ),
+            ],
+          ),
+          subtitle: Row(
+            children: [
+              Expanded(
+                flex: 3,
+                child: Text(
+                  '| Date: $formattedDate',
+                ),
+              ),
+            ],
+          ),
           trailing: IconButton(
             icon: Icon(Icons.delete),
             onPressed: () => onDelete(expense),

@@ -9,7 +9,7 @@ class ExpenseTrackerApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Expense Tracker',
+      title: 'Masroufi Builder',
       theme: ThemeData(
         primaryColor: Colors.blue, // Set primary color to blue
         primarySwatch: Colors.blue, // Set primary swatch to blue

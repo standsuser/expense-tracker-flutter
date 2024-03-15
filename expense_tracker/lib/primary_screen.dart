@@ -30,35 +30,49 @@ class _PrimaryScreenState extends State<PrimaryScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Expense Tracker'),
+        title: Text(
+          'Masroufi Builder',
+          style: TextStyle(
+            fontWeight: FontWeight.bold,
+            color: Colors.white,
+          ),
+        ),
+        backgroundColor: Colors.blue,
       ),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            Card(
-              elevation: 4,
-              margin: EdgeInsets.all(16),
-              child: Padding(
-                padding: EdgeInsets.all(16),
-                child: Text(
-                  'Total Expenses: \$${totalExpenses.toStringAsFixed(2)}',
-                  style: TextStyle(fontSize: 20),
-                ),
-              ),
+body: Center(
+  child: Column(
+    mainAxisAlignment: MainAxisAlignment.center,
+    children: <Widget>[
+      Container(
+        width: double.infinity,
+        margin: EdgeInsets.all(16),
+        child: Card(
+          elevation: 4,
+          child: Padding(
+            padding: EdgeInsets.all(16),
+            child: Text(
+              'Total Expenses: \$${totalExpenses.toStringAsFixed(2)}',
+              style: TextStyle(fontSize: 20),
             ),
-            SizedBox(height: 20),
-            Expanded(
-              child: ListView.builder(
-                itemCount: expenses.length,
-                itemBuilder: (BuildContext context, int index) {
-                  return ExpenseItem(expense: expenses[index], onDelete: removeExpense);
-                },
-              ),
-            ),
-          ],
+          ),
         ),
       ),
+      SizedBox(height: 20),
+      Expanded(
+        child: ListView.builder(
+          itemCount: expenses.length,
+          itemBuilder: (BuildContext context, int index) {
+            return ExpenseItem(
+              expense: expenses[index],
+              onDelete: removeExpense,
+            );
+          },
+        ),
+      ),
+    ],
+  ),
+),
+
       floatingActionButton: FloatingActionButton(
         onPressed: () {
           showModalBottomSheet(
