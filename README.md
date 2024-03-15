@@ -28,3 +28,13 @@ To run the Expense Tracker app locally, follow these steps:
 The Expense Tracker app uses the following dependencies:
 - `flutter_hooks`: Provides hooks for Flutter applications, used for state management and enhanced widget functionality.
 - `cupertino_icons`: Provides iOS-style icons for the app.
+
+## Screenshots:
+![Screenshot 1](1.png)
+*Caption for Screenshot 1*
+
+![Screenshot 2](2.png)
+*Caption for Screenshot 2*
+
+![Screenshot 3](3.png)
+*Caption for Screenshot 3*
