@@ -1,7 +1,31 @@
 import 'package:flutter/material.dart';
 import 'package:expense_tracker/expense_item.dart';
+import 'package:expense_tracker/expense_entry_bottom_sheet.dart';
+import 'package:expense_tracker/expense.dart';
 
-class PrimaryScreen extends StatelessWidget {
+class PrimaryScreen extends StatefulWidget {
+  @override
+  _PrimaryScreenState createState() => _PrimaryScreenState();
+}
+
+class _PrimaryScreenState extends State<PrimaryScreen> {
+  List<ExpenseItemData> expenses = [];
+  double totalExpenses = 0.0;
+
+  void addExpense(ExpenseItemData expense) {
+    setState(() {
+      expenses.add(expense);
+      totalExpenses += expense.amount;
+    });
+  }
+
+  void removeExpense(ExpenseItemData expense) {
+    setState(() {
+      expenses.remove(expense);
+      totalExpenses -= expense.amount;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -12,24 +36,23 @@ class PrimaryScreen extends StatelessWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
-            Text(
-              'Overall Expenses:',
-              style: TextStyle(fontSize: 20),
-            ),
-            Text(
-              '\$1000', // Replace with actual overall expenses
-              style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+            Card(
+              elevation: 4,
+              margin: EdgeInsets.all(16),
+              child: Padding(
+                padding: EdgeInsets.all(16),
+                child: Text(
+                  'Total Expenses: \$${totalExpenses.toStringAsFixed(2)}',
+                  style: TextStyle(fontSize: 20),
+                ),
+              ),
             ),
             SizedBox(height: 20),
             Expanded(
               child: ListView.builder(
-                itemCount: 5, // Replace with actual number of expenses
+                itemCount: expenses.length,
                 itemBuilder: (BuildContext context, int index) {
-                  return ExpenseItem(
-                    title: 'Expense ${index + 1}',
-                    amount: 100, // Replace with actual amount
-                    date: DateTime.now(), // Replace with actual date
-                  );
+                  return ExpenseItem(expense: expenses[index], onDelete: removeExpense);
                 },
               ),
             ),
@@ -38,8 +61,12 @@ class PrimaryScreen extends StatelessWidget {
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          // Open bottom sheet for adding new expense
-          // Implement this
+          showModalBottomSheet(
+            context: context,
+            builder: (BuildContext context) {
+              return ExpenseEntryBottomSheet(addExpense: addExpense);
+            },
+          );
         },
         tooltip: 'Add Expense',
         child: Icon(Icons.add),
