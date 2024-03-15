@@ -31,10 +31,7 @@ The Expense Tracker app uses the following dependencies:
 
 ## Screenshots:
 ![Screenshot 1](1.png)
-*Caption for Screenshot 1*
 
 ![Screenshot 2](2.png)
-*Caption for Screenshot 2*
 
 ![Screenshot 3](3.png)
-*Caption for Screenshot 3*
