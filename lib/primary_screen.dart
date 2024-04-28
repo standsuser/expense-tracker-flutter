@@ -30,40 +30,56 @@ class _PrimaryScreenState extends State<PrimaryScreen> {
 //--------------------------------------------------------
   double totalExpenses = 0.0;
 
-  //  Future<void> addExpense(String t, double a, DateTime d) {
-  //   return http
-  //       .post(expensesURL, body: json.encode({'expenseTitle': t, 'expenseAmount': a, 'expenseDate': d}))
-  //       .then((response) {
-  //     _expenses.add(Expense(
-  //         id: json.decode(response.body)['name'], expenseTitle: t, expenseAmount: a, expenseDate: d));
-  //   }).catchError((err) {
-  //     print("provider:" + err.toString());
-  //     throw err;
-  //   });
-  // }
-
 //---------------------------------
 
+  // Future<void> fetchExpensesFromServer() async {
+  //   try {
+  //     var response = await http.get(expensesURL);
+  //     var fetchedData = json.decode(response.body) as Map<String, dynamic>;
+  //     setState(() {
+  //       _expenses.clear();
+  //       fetchedData.forEach((key, value) {
+  //         _expenses.add(Expense(
+  //             id: key,
+  //             expenseTitle: value['expenseTitle'],
+  //             expenseAmount: value['expenseAmount'],
+  //             expenseDate: value['expenseDate']));
+  //       });
+  //     });
+  //   } catch (err) {
+  //     print(err);
+  //   }
+  // }
+
   Future<void> fetchExpensesFromServer() async {
+    setState(() {
+      isLoading = true;
+    });
     try {
       var response = await http.get(expensesURL);
       var fetchedData = json.decode(response.body) as Map<String, dynamic>;
       setState(() {
         _expenses.clear();
         fetchedData.forEach((key, value) {
+          // Parse string date to DateTime object
+          DateTime expenseDate = DateTime.parse(value['expenseDate']);
           _expenses.add(Expense(
               id: key,
               expenseTitle: value['expenseTitle'],
               expenseAmount: value['expenseAmount'],
-              expenseDate: value['expenseDate']));
+              expenseDate: expenseDate)); // Assign parsed DateTime
         });
+        isLoading = false;
       });
     } catch (err) {
       print(err);
+      setState(() {
+        isLoading = false;
+      });
     }
   }
 
-  void deleteIdea(String id_to_delete) async {
+  void deleteExpense(String id_to_delete) async {
     var expenseToDeleteURL = Uri.parse(
         'https://no-provider-default-rtdb.europe-west1.firebasedatabase.app/expenses/$id_to_delete.json');
     try {
@@ -128,32 +144,27 @@ class _PrimaryScreenState extends State<PrimaryScreen> {
       ),
       body: RefreshIndicator(
         onRefresh: () => fetchExpensesFromServer(),
-        child: ListView.builder(
-            itemCount: _expenses.length,
-            itemBuilder: (ctx, index) {
-              return Dismissible(
-                key: ValueKey(_expenses[index].id),
-                background: Container(
-                  alignment: Alignment.centerRight,
-                  padding: EdgeInsets.only(right: 20),
-                  color: Color.fromARGB(255, 2, 34, 218),
-                  child: Icon(
-                    Icons.delete,
-                    color: Colors.white,
-                  ),
-                ),
-                direction: DismissDirection.endToStart,
-                onDismissed: (dir) {
-                  deleteIdea(_expenses[index].id);
+        child: Column(
+          children: [
+            SizedBox(height: 20),
+            Expanded(
+              child: ListView.builder(
+                itemCount: _expenses.length,
+                itemBuilder: (BuildContext context, int index) {
+                  return ExpenseItem(
+                    expense: _expenses[index],
+                    onDelete: (expense) {
+                      deleteExpense(_expenses[index].id);
+                      setState(() {
+                        _expenses.remove(expense);
+                      });
+                    },
+                  );
                 },
-                child: ListTile(
-                  title: Text(_expenses[index].expenseTitle),
-                  subtitle: Text(
-                    '${_expenses[index].expenseAmount} - ${_expenses[index].expenseDate}',
-                  ),
-                ),
-              );
-            }),
+              ),
+            ),
+          ],
+        ),
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
@@ -162,7 +173,13 @@ class _PrimaryScreenState extends State<PrimaryScreen> {
             builder: (BuildContext context) {
               return ExpenseEntryBottomSheet();
             },
-          );
+          ).then((_) {
+            // This block of code executes after the bottom sheet is dismissed
+            setState(() {
+              // Refresh the UI here
+              fetchExpensesFromServer();
+            });
+          });
         },
         tooltip: 'Add Expense',
         child: Icon(Icons.add),

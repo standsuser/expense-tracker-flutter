@@ -24,11 +24,15 @@ class _ExpenseEntryBottomSheetState extends State<ExpenseEntryBottomSheet> {
   double totalExpenses = 0.0;
 
   Future<void> addExpense(String t, double a, DateTime d) {
-      final formattedDate = d.toIso8601String(); // Convert DateTime to ISO 8601 string
+    final formattedDate =
+        d.toIso8601String(); // Convert DateTime to ISO 8601 string
     return http
         .post(expensesURL,
-            body: json.encode(
-                {'expenseTitle': t, 'expenseAmount': a, 'expenseDate': formattedDate}))
+            body: json.encode({
+              'expenseTitle': t,
+              'expenseAmount': a,
+              'expenseDate': formattedDate
+            }))
         .then((response) {
       _expenses.add(Expense(
           id: json.decode(response.body)['name'],
@@ -40,23 +44,25 @@ class _ExpenseEntryBottomSheetState extends State<ExpenseEntryBottomSheet> {
       throw err;
     });
   }
+
   @override
   Widget build(BuildContext context) {
-DateTime selectedDate = DateTime.now(); 
+    DateTime selectedDate = DateTime.now();
 
-
-  void selectDate(BuildContext context) async {
-    final DateTime? picked = await showDatePicker(
-      context: context,
-      initialDate: selectedDate,
-      firstDate: DateTime(2000),
-      lastDate: DateTime.now(),
-    );
-    if (picked != null) {
-      selectedDate = picked;
-      dateValue.value = TextEditingValue(text: picked.toString()); // Update dateValue      // Update selectedDate
+    void selectDate(BuildContext context) async {
+      final DateTime? picked = await showDatePicker(
+        context: context,
+        initialDate: selectedDate,
+        firstDate: DateTime(2000),
+        lastDate: DateTime.now(),
+      );
+      if (picked != null) {
+        selectedDate = picked;
+        dateValue.value = TextEditingValue(
+            text: picked
+                .toString()); // Update dateValue      // Update selectedDate
+      }
     }
-  }
 
     return SingleChildScrollView(
         child: Padding(
@@ -101,11 +107,10 @@ DateTime selectedDate = DateTime.now();
                                   setState(() {
                                     isLoading = true;
                                   });
-                                  double amount = double.parse(amountValue.text);
+                                  double amount =
+                                      double.parse(amountValue.text);
                                   addExpense(
-                                          titleValue.text,
-                                          amount,
-                                          selectedDate)
+                                          titleValue.text, amount, selectedDate)
                                       .catchError((err) {
                                     return showDialog<Null>(
                                       context: context,
@@ -128,12 +133,10 @@ DateTime selectedDate = DateTime.now();
                                     });
                                     Navigator.of(context).pop();
                                   });
-
                                 },
                                 icon: const Icon(Icons.check)),
                       )
                     ],
-                  ) 
-            ));
+                  )));
   }
 }
