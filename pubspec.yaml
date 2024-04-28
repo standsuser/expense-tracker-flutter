@@ -33,7 +33,6 @@ dependencies:
   cloud_firestore: ^4.16.1
   flutter_hooks: ^0.18.0
   cloud_functions: ^4.6.8
-  firebase_database: ^10.5.4
 
 
 
