@@ -1,7 +1,14 @@
-class ExpenseItemData {
-  final String title;
-  final double amount;
-  final DateTime date;
+import 'dart:ffi';
 
-  ExpenseItemData({required this.title, required this.amount, required this.date});
+class Expense {
+  String id;
+  String expenseTitle;
+  double expenseAmount;
+  DateTime expenseDate;
+
+  Expense(
+      {required this.id,
+      required this.expenseTitle,
+      required this.expenseAmount,
+      required this.expenseDate});
 }

@@ -1,15 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:expense_tracker/expense.dart';
+import 'package:firebase_database/firebase_database.dart';
+import 'primary_screen.dart';
+import 'expense_entry_bottom_sheet.dart';
+import 'expense.dart';
 
 class ExpenseItem extends StatelessWidget {
-  final ExpenseItemData expense;
-  final Function(ExpenseItemData) onDelete;
+  final Expense expense;
+  final Function(Expense) onDelete;
 
   ExpenseItem({required this.expense, required this.onDelete});
 
   @override
   Widget build(BuildContext context) {
-    String formattedDate = '${expense.date.day}/${expense.date.month}/${expense.date.year}';
+    String formattedDate = '${expense.expenseDate}';
 
     return Padding(
       padding: EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
@@ -27,7 +31,7 @@ class ExpenseItem extends StatelessWidget {
                     border: Border.all(color: Colors.black),
                   ),
                   child: Text(
-                    '\$${expense.amount.toStringAsFixed(2)}',
+                    '\$${expense.expenseAmount.toStringAsFixed(2)}',
                   ),
                 ),
               ),
@@ -36,7 +40,7 @@ class ExpenseItem extends StatelessWidget {
                 child: Padding(
                   padding: EdgeInsets.symmetric(horizontal: 8.0),
                   child: Text(
-                    expense.title,
+                    expense.expenseTitle,
                     style: TextStyle(fontSize: 16),
                   ),
                 ),
