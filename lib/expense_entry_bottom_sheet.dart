@@ -6,7 +6,8 @@ import 'dart:convert';
 import 'dart:ffi';
 import 'package:http/http.dart' as http;
 import 'globals.dart';
-
+import 'expenses_provider.dart';
+import 'package:provider/provider.dart';
 class ExpenseEntryBottomSheet extends StatefulWidget {
   @override
   _ExpenseEntryBottomSheetState createState() =>
@@ -14,40 +15,16 @@ class ExpenseEntryBottomSheet extends StatefulWidget {
 }
 
 class _ExpenseEntryBottomSheetState extends State<ExpenseEntryBottomSheet> {
-  List<Expense> _expenses = [];
   final titleValue = TextEditingController();
   final amountValue = TextEditingController();
   final dateValue = TextEditingController();
   var isLoading = false;
-  final expensesURL = Uri.parse(
-      'https://no-provider-default-rtdb.europe-west1.firebasedatabase.app/expenses.json');
-//--------------------------------------------------------
-
-  Future<void> addExpense(String t, double a, DateTime d) {
-    final formattedDate =
-        d.toIso8601String(); // Convert DateTime to ISO 8601 string
-    totalExpenses += a;
-    return http
-        .post(expensesURL,
-            body: json.encode({
-              'expenseTitle': t,
-              'expenseAmount': a,
-              'expenseDate': formattedDate
-            }))
-        .then((response) {
-      _expenses.add(Expense(
-          id: json.decode(response.body)['name'],
-          expenseTitle: t,
-          expenseAmount: a,
-          expenseDate: d));
-    }).catchError((err) {
-      print("provider:" + err.toString());
-      throw err;
-    });
-  }
+  
 
   @override
   Widget build(BuildContext context) {
+
+    final expensesProvider = Provider.of<ExpensesProvider>(context, listen: true);
     DateTime selectedDate = DateTime.now();
 
     void selectDate(BuildContext context) async {
@@ -110,7 +87,7 @@ class _ExpenseEntryBottomSheetState extends State<ExpenseEntryBottomSheet> {
                                   });
                                   double amount =
                                       double.parse(amountValue.text);
-                                  addExpense(
+                                  expensesProvider.addExpense(
                                           titleValue.text, amount, selectedDate)
                                       .catchError((err) {
                                     return showDialog<Null>(
