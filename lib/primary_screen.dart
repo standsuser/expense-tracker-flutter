@@ -30,27 +30,6 @@ class _PrimaryScreenState extends State<PrimaryScreen> {
       'https://no-provider-default-rtdb.europe-west1.firebasedatabase.app/expenses.json');
 //--------------------------------------------------------
 
-//---------------------------------
-
-  // Future<void> fetchExpensesFromServer() async {
-  //   try {
-  //     var response = await http.get(expensesURL);
-  //     var fetchedData = json.decode(response.body) as Map<String, dynamic>;
-  //     setState(() {
-  //       _expenses.clear();
-  //       fetchedData.forEach((key, value) {
-  //         _expenses.add(Expense(
-  //             id: key,
-  //             expenseTitle: value['expenseTitle'],
-  //             expenseAmount: value['expenseAmount'],
-  //             expenseDate: value['expenseDate']));
-  //       });
-  //     });
-  //   } catch (err) {
-  //     print(err);
-  //   }
-  // }
-
   Future<void> fetchExpensesFromServer() async {
     setState(() {
       isLoading = true;
@@ -60,6 +39,7 @@ class _PrimaryScreenState extends State<PrimaryScreen> {
       var fetchedData = json.decode(response.body) as Map<String, dynamic>;
       setState(() {
         _expenses.clear();
+        totalExpenses = 0;
         fetchedData.forEach((key, value) {
           // Parse string date to DateTime object
           DateTime expenseDate = DateTime.parse(value['expenseDate']);
@@ -67,10 +47,16 @@ class _PrimaryScreenState extends State<PrimaryScreen> {
               id: key,
               expenseTitle: value['expenseTitle'],
               expenseAmount: value['expenseAmount'],
-              expenseDate: expenseDate)); // Assign parsed DateTime
+              expenseDate: expenseDate));
+          totalExpenses += value['expenseAmount'];
+          // Assign parsed DateTime
         });
         isLoading = false;
       });
+      // totalExpenses = 0;
+      // for (var expense in _expenses) {
+      //   totalExpenses += expense.expenseAmount;
+      // }
     } catch (err) {
       print(err);
       setState(() {
@@ -98,8 +84,8 @@ class _PrimaryScreenState extends State<PrimaryScreen> {
 
   // ------------------------------------------
   void initState() {
-    fetchExpensesFromServer();
     super.initState();
+    fetchExpensesFromServer();
   }
 
 //-----------------------------------------------------
