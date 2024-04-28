@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:expense_tracker/expense.dart';
 import 'package:flutter_hooks/flutter_hooks.dart'; // Import flutter_hooks
 
+
 class ExpenseEntryBottomSheet extends HookWidget {
   final Function(ExpenseItemData) addExpense;
 
@@ -28,7 +29,8 @@ class ExpenseEntryBottomSheet extends HookWidget {
     void submitExpense() {
       final title = titleController.text;
       final amount = double.tryParse(amountController.text) ?? 0.0;
-      final expense = ExpenseItemData(title: title, amount: amount, date: selectedDate.value);
+      final expense = ExpenseItemData(
+          title: title, amount: amount, date: selectedDate.value);
       addExpense(expense);
       Navigator.of(context).pop();
     }
@@ -52,7 +54,8 @@ class ExpenseEntryBottomSheet extends HookWidget {
             SizedBox(height: 10),
             Row(
               children: [
-                Text('Date: ${selectedDate.value.day}/${selectedDate.value.month}/${selectedDate.value.year}'),
+                Text(
+                    'Date: ${selectedDate.value.day}/${selectedDate.value.month}/${selectedDate.value.year}'),
                 SizedBox(width: 10),
                 ElevatedButton(
                   onPressed: () => selectDate(context),
