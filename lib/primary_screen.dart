@@ -9,6 +9,7 @@ import 'package:expense_tracker/expense.dart';
 import 'package:cloud_functions/cloud_functions.dart';
 import 'package:firebase_database/firebase_database.dart'; // Import the Firebase Realtime Database package
 import 'expense.dart';
+import 'globals.dart';
 
 // FirebaseDatabase database = FirebaseDatabase.instance;
 // // // Set the custom Realtime Database URL
@@ -28,7 +29,6 @@ class _PrimaryScreenState extends State<PrimaryScreen> {
   final expensesURL = Uri.parse(
       'https://no-provider-default-rtdb.europe-west1.firebasedatabase.app/expenses.json');
 //--------------------------------------------------------
-  double totalExpenses = 0.0;
 
 //---------------------------------
 
@@ -83,13 +83,13 @@ class _PrimaryScreenState extends State<PrimaryScreen> {
     var expenseToDeleteURL = Uri.parse(
         'https://no-provider-default-rtdb.europe-west1.firebasedatabase.app/expenses/$id_to_delete.json');
     try {
+      var deletedExpense =
+          _expenses.firstWhere((element) => element.id == id_to_delete);
       await http
-          .delete(expenseToDeleteURL); // wait for the delete request to be done
+          .delete(expenseToDeleteURL); // Wait for the delete request to be done
       setState(() {
-        _expenses.removeWhere((element) {
-          // when done, remove it locally.
-          return element.id == id_to_delete;
-        });
+        _expenses.removeWhere((element) => element.id == id_to_delete);
+        totalExpenses -= deletedExpense.expenseAmount;
       });
     } catch (err) {
       print(err);
@@ -143,29 +143,42 @@ class _PrimaryScreenState extends State<PrimaryScreen> {
         ],
       ),
       body: RefreshIndicator(
-        onRefresh: () => fetchExpensesFromServer(),
-        child: Column(
-          children: [
-            SizedBox(height: 20),
-            Expanded(
-              child: ListView.builder(
-                itemCount: _expenses.length,
-                itemBuilder: (BuildContext context, int index) {
-                  return ExpenseItem(
-                    expense: _expenses[index],
-                    onDelete: (expense) {
-                      deleteExpense(_expenses[index].id);
-                      setState(() {
-                        _expenses.remove(expense);
-                      });
-                    },
-                  );
-                },
+          onRefresh: () => fetchExpensesFromServer(),
+          child: Column(
+            children: [
+              Container(
+                width: double.infinity,
+                margin: EdgeInsets.all(16),
+                child: Card(
+                  elevation: 4,
+                  child: Padding(
+                    padding: EdgeInsets.all(16),
+                    child: Text(
+                      'Total Expenses: \$${totalExpenses.toStringAsFixed(2)}',
+                      style: TextStyle(fontSize: 20),
+                    ),
+                  ),
+                ),
               ),
-            ),
-          ],
-        ),
-      ),
+              SizedBox(height: 20),
+              Expanded(
+                child: ListView.builder(
+                  itemCount: _expenses.length,
+                  itemBuilder: (BuildContext context, int index) {
+                    return ExpenseItem(
+                      expense: _expenses[index],
+                      onDelete: (expense) {
+                        deleteExpense(_expenses[index].id);
+                        setState(() {
+                          _expenses.remove(expense);
+                        });
+                      },
+                    );
+                  },
+                ),
+              ),
+            ],
+          )),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
           showModalBottomSheet(

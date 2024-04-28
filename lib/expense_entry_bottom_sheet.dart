@@ -5,6 +5,7 @@ import 'primary_screen.dart';
 import 'dart:convert';
 import 'dart:ffi';
 import 'package:http/http.dart' as http;
+import 'globals.dart';
 
 class ExpenseEntryBottomSheet extends StatefulWidget {
   @override
@@ -21,11 +22,11 @@ class _ExpenseEntryBottomSheetState extends State<ExpenseEntryBottomSheet> {
   final expensesURL = Uri.parse(
       'https://no-provider-default-rtdb.europe-west1.firebasedatabase.app/expenses.json');
 //--------------------------------------------------------
-  double totalExpenses = 0.0;
 
   Future<void> addExpense(String t, double a, DateTime d) {
     final formattedDate =
         d.toIso8601String(); // Convert DateTime to ISO 8601 string
+    totalExpenses += a;
     return http
         .post(expensesURL,
             body: json.encode({

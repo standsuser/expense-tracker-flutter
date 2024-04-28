@@ -16,7 +16,7 @@ class ExpenseItem extends StatelessWidget {
     String formattedDate = '${expense.expenseDate}';
 
     return Padding(
-      padding: EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
+      padding: EdgeInsets.symmetric(vertical: 8.0, horizontal: 8.0),
       child: Card(
         elevation: 4,
         child: ListTile(
